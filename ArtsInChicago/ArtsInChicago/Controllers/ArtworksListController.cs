@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ArtsInChicago.Services.Cotracts;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +9,18 @@ namespace ArtsInChicago.Controllers
 {
     public class ArtworksListController : Controller
     {
-        public IActionResult Index()
+        private readonly IArtworksListService artworksListService;
+
+        public ArtworksListController(IArtworksListService artworksListService)
         {
-            return View();
+            this.artworksListService = artworksListService;
+        }
+
+        public async Task<IActionResult> Index(int? id)
+        {
+            var artworksList = await this.artworksListService.GetArtworksAsync(id);
+
+            return View(artworksList);
         }
     }
 }

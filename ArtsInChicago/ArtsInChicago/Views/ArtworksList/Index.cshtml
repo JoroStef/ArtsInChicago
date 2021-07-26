@@ -1,4 +1,44 @@
-﻿<p>List of current artworks ...</p>
+﻿@model ArtworksList;
+
+@{
+    ViewData["Title:"] = "Artworks list";
+}
+
+<h4>List of current artworks ...</h4>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>"Title"</th>
+            <th>"Artist"</th>
+            <th>"Date"</th>
+            <th>"Ref. Number"</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Data)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                <td>@Html.DisplayFor(modelItem => item.Artist)</td>
+                <td>@Html.DisplayFor(modelItem => item.Date)</td>
+                <td>@Html.DisplayFor(modelItem => item.RefNumber)</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination">
+        <li class="page-item"><a class="page-link" asp-controller="ArtworksList" asp-action="Index" asp-route-id="@(Model.PageNr-1)">Previous</a></li>
+        <li class="page-item"><a class="page-link" asp-controller="ArtworksList" asp-action="Index" asp-route-id="@Model.PageNr">@Model.PageNr</a></li>
+        <li class="page-item"><a class="page-link" asp-controller="ArtworksList" asp-action="Index" asp-route-id="@(Model.PageNr+1)">Next</a></li>
+    </ul>
+</nav>
 
 <hr />
 <div>

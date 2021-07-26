@@ -18,7 +18,7 @@ namespace ArtsInChicago.Services
 
         public async Task<ArtworksList> GetArtworksAsync(int? pageNr)
         {
-            if (pageNr == null)
+            if (pageNr == null || pageNr < 1)
             {
                 pageNr = 1;
             }
@@ -34,7 +34,7 @@ namespace ArtsInChicago.Services
 
                 var artworksList = JsonConvert.DeserializeObject<ArtworksList>(result);
 
-                artworksList.PageNr = pageNr.Value;
+                //artworksList.PageNr = pageNr.Value;
 
                 return artworksList;
             }

@@ -32,13 +32,30 @@
     </tbody>
 </table>
 
-<nav aria-label="Page navigation example">
+@*<nav aria-label="Page navigation example">
     <ul class="pagination">
         <li class="page-item"><a class="page-link" asp-controller="ArtworksList" asp-action="Index" asp-route-id="@(Model.PageNr-1)">Previous</a></li>
         <li class="page-item"><a class="page-link" asp-controller="ArtworksList" asp-action="Index" asp-route-id="@Model.PageNr">@Model.PageNr</a></li>
         <li class="page-item"><a class="page-link" asp-controller="ArtworksList" asp-action="Index" asp-route-id="@(Model.PageNr+1)">Next</a></li>
     </ul>
-</nav>
+</nav>*@
+
+@{
+    var prevDisabled = Model.PagingParams.CurrentPage == 1 ? "disabled" : "";
+    var nextDisabled = Model.PagingParams.CurrentPage == Model.PagingParams.TotalPages ? "disabled" : "";
+
+}
+
+<a asp-action="Index"
+   asp-route-id="@(Model.PagingParams.CurrentPage-1)"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-id="@(Model.PagingParams.CurrentPage+1)"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
 
 <hr />
 <div>

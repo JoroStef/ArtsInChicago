@@ -4,5 +4,14 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <p>This website delivers information about the artworks that are currently part of Art Institute of Chicago.</p>
+    <p>
+        You can get a list of the current artworks
+        <a asp-area="" asp-controller="ArtworksList" asp-action="Index"><span class="alert-link">here</span></a>.
+    </p>
+    <p>
+        Or you can visit the 
+        <a asp-area="" asp-controller="Gallery" asp-action="Index"><span class="alert-link">gallery</span></a>
+        of artwork pictures.
+    </p>
 </div>

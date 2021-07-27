@@ -32,10 +32,23 @@ namespace ArtsInChicago.Services
                 {
                     string imageEndpoint = GetImageEndpoint(artworksList.ArticConfig.IIIFurl, item.ImageId);
 
+                    //await GetImageAsync(imageEndpoint);
                     item.ImageUrl = imageEndpoint;
                 }
 
                 return artworksList;
+            }
+        }
+
+        private async Task GetImageAsync(string endpoint)
+        {
+            var client = new HttpClient();
+
+            using (var resource = await client.GetAsync(endpoint))
+            {
+                var result = await resource.Content.ReadAsStringAsync();
+
+                //var foo = 123;
             }
         }
 
@@ -54,7 +67,7 @@ namespace ArtsInChicago.Services
 
         private string GetImageEndpoint(string iifUrl, string imageId)
         {
-            string endpoint = iifUrl + imageId + "/full/843,/0/default.jpg";
+            string endpoint = iifUrl + "/" + imageId + "/full/843,/0/default.jpg";
 
             return endpoint;
         }

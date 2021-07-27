@@ -8,6 +8,8 @@ namespace ArtsInChicago.Models
 {
     public class ArtworksList
     {
+        //public int CurrentPage { get; set; }
+
         [JsonProperty("pagination")]
         public Pagination PagingParams { get; set; }
 

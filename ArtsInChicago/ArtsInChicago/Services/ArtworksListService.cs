@@ -34,7 +34,7 @@ namespace ArtsInChicago.Services
 
                 var artworksList = JsonConvert.DeserializeObject<ArtworksList>(result);
 
-                //artworksList.PageNr = pageNr.Value;
+                //artworksList.CurrentPage = pageNr.Value;
 
                 return artworksList;
             }

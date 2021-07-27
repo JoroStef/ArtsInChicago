@@ -18,9 +18,18 @@ namespace ArtsInChicago.Controllers
 
         public async Task<IActionResult> Index(int? pageNumber)
         {
-            var artworksList = await this.artworksListService.GetArtworksAsync(pageNumber);
+            try
+            {
+                var artworksList = await this.artworksListService.GetArtworksAsync(pageNumber);
 
-            return View(artworksList);
+                return View(artworksList);
+
+            }
+            catch (Exception)
+            {
+
+                return RedirectToAction("Error", "Home");
+            }        
         }
     }
 }

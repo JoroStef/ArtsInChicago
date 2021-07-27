@@ -19,33 +19,35 @@
     <tbody>
         @foreach (var item in Model.Data)
         {
-        <tr>
-            <td>@Html.DisplayFor(modelItem => item.Title)</td>
-            <td>@Html.DisplayFor(modelItem => item.Artist)</td>
-            <td>@Html.DisplayFor(modelItem => item.Date)</td>
-            <td>@Html.DisplayFor(modelItem => item.PlaceOfOrigin)</td>
-            <td>@Html.DisplayFor(modelItem => item.RefNumber)</td>
-            @*<td>
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
-            </td>*@
-        </tr>
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                <td>@Html.DisplayFor(modelItem => item.Artist)</td>
+                <td>@Html.DisplayFor(modelItem => item.Date)</td>
+                <td>@Html.DisplayFor(modelItem => item.PlaceOfOrigin)</td>
+                <td>@Html.DisplayFor(modelItem => item.RefNumber)</td>
+                @*<td>
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    </td>*@
+            </tr>
         }
     </tbody>
 </table>
 
-@{
-    var prevDisabled = Model.PagingParams.CurrentPage == 1 ? "disabled" : "";
-    var nextDisabled = Model.PagingParams.CurrentPage == Model.PagingParams.TotalPages ? "disabled" : "";
+<div>
+    @{
+        var prevDisabled = Model.PagingParams.CurrentPage == 1 ? "disabled" : "";
+        var nextDisabled = Model.PagingParams.CurrentPage == Model.PagingParams.TotalPages ? "disabled" : "";
 
-}
+    }
 
-<nav aria-label="Page navigation example">
-    <ul class="pagination">
-        <li class="page-item @prevDisabled"><a class="page-link" asp-controller="ArtworksList" asp-action="Index" asp-route-pageNumber="@(Model.PagingParams.CurrentPage-1)">Previous</a></li>
-        <li class="page-item"><a class="page-link" asp-controller="ArtworksList" asp-action="Index" asp-route-pageNumber="@Model.PagingParams.CurrentPage">@Model.PagingParams.CurrentPage</a></li>
-        <li class="page-item @nextDisabled"><a class="page-link" asp-controller="ArtworksList" asp-action="Index" asp-route-pageNumber="@(Model.PagingParams.CurrentPage+1)">Next</a></li>
-    </ul>
-</nav>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item @prevDisabled"><a class="page-link" asp-controller="ArtworksList" asp-action="Index" asp-route-pageNumber="@(Model.PagingParams.CurrentPage-1)">Previous</a></li>
+            <li class="page-item"><a class="page-link" asp-controller="ArtworksList" asp-action="Index" asp-route-pageNumber="@Model.PagingParams.CurrentPage">@Model.PagingParams.CurrentPage</a></li>
+            <li class="page-item @nextDisabled"><a class="page-link" asp-controller="ArtworksList" asp-action="Index" asp-route-pageNumber="@(Model.PagingParams.CurrentPage+1)">Next</a></li>
+        </ul>
+    </nav>
+</div>
 
 <hr />
 <div>

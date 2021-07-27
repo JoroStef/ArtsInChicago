@@ -4,6 +4,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Configuration;
+using System.Net;
+using System;
 
 namespace ArtsInChicago.Services
 {
@@ -32,25 +34,25 @@ namespace ArtsInChicago.Services
                 {
                     string imageEndpoint = GetImageEndpoint(artworksList.ArticConfig.IIIFurl, item.ImageId);
 
-                    //await GetImageAsync(imageEndpoint);
                     item.ImageUrl = imageEndpoint;
+
+
                 }
 
                 return artworksList;
             }
         }
 
-        private async Task GetImageAsync(string endpoint)
-        {
-            var client = new HttpClient();
+        //private async Task DownloadImageAsync(string endpoint, string fileName)
+        //{
+        //    using (WebClient webClient = new WebClient())
+        //    {
+        //        var imageUri = new Uri(endpoint);
 
-            using (var resource = await client.GetAsync(endpoint))
-            {
-                var result = await resource.Content.ReadAsStringAsync();
+        //        await webClient.DownloadFileTaskAsync(imageUri, fileName);
 
-                //var foo = 123;
-            }
-        }
+        //    }
+        //}
 
         private string GetArtworksEndpoint(int? pageNr)
         {
@@ -67,7 +69,7 @@ namespace ArtsInChicago.Services
 
         private string GetImageEndpoint(string iifUrl, string imageId)
         {
-            string endpoint = iifUrl + "/" + imageId + "/full/843,/0/default.jpg";
+            string endpoint = iifUrl + "/" + imageId + "/full/400,/0/default.jpg";
 
             return endpoint;
         }

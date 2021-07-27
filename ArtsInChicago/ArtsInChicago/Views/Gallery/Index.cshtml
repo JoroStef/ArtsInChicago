@@ -4,13 +4,39 @@
     ViewData["Title:"] = "Galery";
 }
 
+@{int columns = 4; }
+
 <h4>The gallery ...</h4>
 
+<div class="container">
+    <div class="row">
+        @for (int i = 0; i < columns; i++)
+        {
+            <div class="col">
+                @for (int j = 0; j < Model.Data.Count / columns; j++)
+                {
+                    int index = i * (12 / columns) + j;
+                    @await Html.PartialAsync("_ArtworkPartial", model: Model.Data[index])
+                }
+            </div>
+        }
+    </div>
+</div>
+
 <div>
-    @for (int i = 0; i < 10; i++)
-    {
-        <img src=@Model.Data[i].ImageUrl />
+    @{
+        var prevDisabled = Model.PagingParams.CurrentPage == 1 ? "disabled" : "";
+        var nextDisabled = Model.PagingParams.CurrentPage == Model.PagingParams.TotalPages ? "disabled" : "";
+
     }
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item @prevDisabled"><a class="page-link" asp-controller="Gallery" asp-action="Index" asp-route-pageNumber="@(Model.PagingParams.CurrentPage-1)">Previous</a></li>
+            <li class="page-item"><a class="page-link" asp-controller="Gallery" asp-action="Index" asp-route-pageNumber="@Model.PagingParams.CurrentPage">@Model.PagingParams.CurrentPage</a></li>
+            <li class="page-item @nextDisabled"><a class="page-link" asp-controller="Gallery" asp-action="Index" asp-route-pageNumber="@(Model.PagingParams.CurrentPage+1)">Next</a></li>
+        </ul>
+    </nav>
 </div>
 
 <hr />

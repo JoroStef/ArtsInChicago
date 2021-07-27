@@ -1,0 +1,13 @@
+﻿@model Artwork
+
+
+<div class="card">
+    <img class="card-img-top" src=@Model.ImageUrl alt="Card image cap">
+    <div class="card-body">
+        <h6 class="card-title">@Model.Title, @Model.Date</h6>
+        <p class="card-text">
+            @Model.Artist
+        </p>
+        <a href="#!" class="btn btn-outline-dark btn-sm">More details</a>
+    </div>
+</div>

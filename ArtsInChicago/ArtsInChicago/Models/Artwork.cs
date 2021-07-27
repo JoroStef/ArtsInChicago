@@ -33,5 +33,6 @@ namespace ArtsInChicago.Models
         [DisplayName("Ref. Number")]
         public string RefNumber { get; set; }
 
+        public string ImageUrl { get; set; }
     }
 }

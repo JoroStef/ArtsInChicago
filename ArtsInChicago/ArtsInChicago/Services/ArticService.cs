@@ -18,15 +18,9 @@ namespace ArtsInChicago.Services
 
         public async Task<ArtworksList> GetArtworksAsync(int? pageNr)
         {
-            if (pageNr == null || pageNr < 1)
-            {
-                pageNr = 1;
-            }
+            string endpoint = GetArtworksEndpoint(pageNr);
 
             var client = new HttpClient();
-
-            string basepoint = this.configuration["APIendpoints:BaseEndpoint"];
-            string endpoint = basepoint + $"artworks?fields=id,title,artist_display,date_display,place_of_origin,image_id,main_reference_number&page={pageNr}";
 
             using (var resource = await client.GetAsync(endpoint))
             {
@@ -34,8 +28,35 @@ namespace ArtsInChicago.Services
 
                 var artworksList = JsonConvert.DeserializeObject<ArtworksList>(result);
 
+                foreach (var item in artworksList.Data)
+                {
+                    string imageEndpoint = GetImageEndpoint(artworksList.ArticConfig.IIIFurl, item.ImageId);
+
+                    item.ImageUrl = imageEndpoint;
+                }
+
                 return artworksList;
             }
+        }
+
+        private string GetArtworksEndpoint(int? pageNr)
+        {
+            if (pageNr == null || pageNr < 1)
+            {
+                pageNr = 1;
+            }
+
+            string basepoint = this.configuration["APIendpoints:BaseEndpoint"];
+            string endpoint = basepoint + $"artworks?fields=id,title,artist_display,date_display,place_of_origin,image_id,main_reference_number&page={pageNr}";
+
+            return endpoint;
+        }
+
+        private string GetImageEndpoint(string iifUrl, string imageId)
+        {
+            string endpoint = iifUrl + imageId + "/full/843,/0/default.jpg";
+
+            return endpoint;
         }
     }
 }

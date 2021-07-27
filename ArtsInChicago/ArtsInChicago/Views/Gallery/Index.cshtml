@@ -1,6 +1,19 @@
-﻿The gallery ...
+﻿@model ArtworksList;
 
-<hr/>
+@{
+    ViewData["Title:"] = "Galery";
+}
+
+<h4>The gallery ...</h4>
+
+<div>
+    @for (int i = 0; i < 3; i++)
+    {
+        <img src="@Model.Data[i].ImageUrl" />
+    }
+</div>
+
+<hr />
 <div>
     <p>
         <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>

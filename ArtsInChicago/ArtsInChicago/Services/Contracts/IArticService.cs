@@ -7,6 +7,5 @@ namespace ArtsInChicago.Services.Cotracts
     public interface IArticService
     {
         Task<ArtworksList> GetArtworksAsync(int? pageNr);
-
     }
 }

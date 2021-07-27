@@ -26,7 +26,7 @@ namespace ArtsInChicago.Services
             var client = new HttpClient();
 
             string basepoint = this.configuration["APIendpoints:BaseEndpoint"];
-            string endpoint = basepoint + $"artworks?fields=id,title,artist_display,date_display,main_reference_number&page={pageNr}";
+            string endpoint = basepoint + $"artworks?fields=id,title,artist_display,date_display,place_of_origin,main_reference_number&page={pageNr}";
 
             using (var resource = await client.GetAsync(endpoint))
             {

@@ -22,7 +22,7 @@ namespace ArtsInChicago
         {
             services.AddControllersWithViews();
 
-            services.AddScoped<IArtworksListService, ArtworksListService>();
+            services.AddScoped<IArticService, ArticService>();
 
         }
 

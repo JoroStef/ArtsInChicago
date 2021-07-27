@@ -26,6 +26,9 @@ namespace ArtsInChicago.Models
         [JsonProperty("place_of_origin")]
         public string PlaceOfOrigin { get; set; }
 
+        [JsonProperty("image_id")]
+        public string ImageId { get; set; }
+
         [JsonProperty("main_reference_number")]
         [DisplayName("Ref. Number")]
         public string RefNumber { get; set; }

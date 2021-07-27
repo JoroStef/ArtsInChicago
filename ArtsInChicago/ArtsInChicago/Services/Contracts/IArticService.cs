@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace ArtsInChicago.Services.Cotracts
 {
-    public interface IArtworksListService
+    public interface IArticService
     {
         Task<ArtworksList> GetArtworksAsync(int? pageNr);
 

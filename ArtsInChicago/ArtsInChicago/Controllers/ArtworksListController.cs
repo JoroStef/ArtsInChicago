@@ -9,18 +9,18 @@ namespace ArtsInChicago.Controllers
 {
     public class ArtworksListController : Controller
     {
-        private readonly IArtworksListService artworksListService;
+        private readonly IArticService articService;
 
-        public ArtworksListController(IArtworksListService artworksListService)
+        public ArtworksListController(IArticService articService)
         {
-            this.artworksListService = artworksListService;
+            this.articService = articService;
         }
 
         public async Task<IActionResult> Index(int? pageNumber)
         {
             try
             {
-                var artworksList = await this.artworksListService.GetArtworksAsync(pageNumber);
+                var artworksList = await this.articService.GetArtworksAsync(pageNumber);
 
                 return View(artworksList);
 

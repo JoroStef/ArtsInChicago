@@ -7,11 +7,11 @@ using Microsoft.Extensions.Configuration;
 
 namespace ArtsInChicago.Services
 {
-    public class ArtworksListService : IArtworksListService
+    public class ArticService : IArticService
     {
         private readonly IConfiguration configuration;
 
-        public ArtworksListService(IConfiguration configuration)
+        public ArticService(IConfiguration configuration)
         {
             this.configuration = configuration;
         }
@@ -26,15 +26,13 @@ namespace ArtsInChicago.Services
             var client = new HttpClient();
 
             string basepoint = this.configuration["APIendpoints:BaseEndpoint"];
-            string endpoint = basepoint + $"artworks?fields=id,title,artist_display,date_display,place_of_origin,main_reference_number&page={pageNr}";
+            string endpoint = basepoint + $"artworks?fields=id,title,artist_display,date_display,place_of_origin,image_id,main_reference_number&page={pageNr}";
 
             using (var resource = await client.GetAsync(endpoint))
             {
                 var result = await resource.Content.ReadAsStringAsync();
 
                 var artworksList = JsonConvert.DeserializeObject<ArtworksList>(result);
-
-                //artworksList.CurrentPage = pageNr.Value;
 
                 return artworksList;
             }

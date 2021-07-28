@@ -6,15 +6,13 @@ using System.Threading.Tasks;
 
 namespace ArtsInChicago.Models
 {
-    public class ArtworksList
+    public class ArtworkDetails
     {
-        [JsonProperty("pagination")]
-        public Pagination PagingParams { get; set; }
-
         [JsonProperty("data")]
-        public List<ArtworkDataPartial> Data { get; set; }
+        public ArtworkDataFull Data { get; set; }
 
         [JsonProperty("config")]
         public ArticConfig ArticConfig { get; set; }
+
     }
 }

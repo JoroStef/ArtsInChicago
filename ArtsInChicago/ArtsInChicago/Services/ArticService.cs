@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Microsoft.Extensions.Configuration;
 using System.Net;
 using System;
+using System.Text;
 
 namespace ArtsInChicago.Services
 {
@@ -18,9 +19,41 @@ namespace ArtsInChicago.Services
             this.configuration = configuration;
         }
 
+        public async Task<ArtworkDetails> GetArtworkByIdAsync(int id)
+        {
+            string[] includeFields = { "id", "title", "artist_title", "date_display", "place_of_origin", "department_title", "image_id", "main_reference_number", "medium_display", "dimensions" };
+            string endpoint = GetEndpoint(includeFields, routeParam: id.ToString());
+
+            var client = new HttpClient();
+
+            using (var resource = await client.GetAsync(endpoint))
+            {
+                if (resource.StatusCode != HttpStatusCode.OK)
+                {
+                    throw new ArgumentNullException(resource.ReasonPhrase);
+                }
+
+                var result = await resource.Content.ReadAsStringAsync();
+
+                var artwork = JsonConvert.DeserializeObject<ArtworkDetails>(result);
+
+                string imageEndpoint = GetImageEndpoint(artwork.ArticConfig.IIIFurl, artwork.Data.ImageId, 843);
+
+                artwork.Data.ImageUrl = imageEndpoint;
+
+                return artwork;
+            }
+        }
+
         public async Task<ArtworksList> GetArtworksAsync(int? pageNr)
         {
-            string endpoint = GetArtworksEndpoint(pageNr);
+            if (pageNr == null || pageNr < 1)
+            {
+                pageNr = 1;
+            }
+
+            string[] includeFields = { "id", "title", "artist_title", "date_display", "place_of_origin", "department_title", "image_id", "main_reference_number" };
+            string endpoint = GetEndpoint(includeFields, pageNr);
 
             var client = new HttpClient();
 
@@ -32,17 +65,16 @@ namespace ArtsInChicago.Services
 
                 foreach (var item in artworksList.Data)
                 {
-                    string imageEndpoint = GetImageEndpoint(artworksList.ArticConfig.IIIFurl, item.ImageId);
+                    string imageEndpoint = GetImageEndpoint(artworksList.ArticConfig.IIIFurl, item.ImageId, 400);
 
                     item.ImageUrl = imageEndpoint;
-
-
                 }
 
                 return artworksList;
             }
         }
 
+        #region Not used
         //private async Task DownloadImageAsync(string endpoint, string fileName)
         //{
         //    using (WebClient webClient = new WebClient())
@@ -54,22 +86,56 @@ namespace ArtsInChicago.Services
         //    }
         //}
 
-        private string GetArtworksEndpoint(int? pageNr)
+        //private string GetArtworksEndpoint(int? pageNr)
+        //{
+        //    if (pageNr == null || pageNr < 1)
+        //    {
+        //        pageNr = 1;
+        //    }
+
+        //    string basepoint = this.configuration["APIendpoints:BaseEndpointArtworks"];
+        //    string endpoint = basepoint +
+        //        $"?fields=id,title,artist_title,date_display,place_of_origin,department_title,image_id,main_reference_number" +
+        //        //$"&is_on_view=1" +
+        //        $"&page={pageNr}";
+
+        //    return endpoint;
+        //}
+
+        #endregion
+
+        private string GetEndpoint(string[] includeFields, int? pageNr = null, string routeParam = "")
         {
-            if (pageNr == null || pageNr < 1)
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append(this.configuration["APIendpoints:BaseEndpointArtworks"]);
+
+            if (!string.IsNullOrEmpty(routeParam))
             {
-                pageNr = 1;
+                sb.Append($"/{routeParam}");
             }
 
-            string basepoint = this.configuration["APIendpoints:BaseEndpoint"];
-            string endpoint = basepoint + $"artworks?fields=id,title,artist_display,date_display,place_of_origin,image_id,main_reference_number&page={pageNr}";
+            if (includeFields.Length != 0 || pageNr != null)
+            {
+                sb.Append("?");
+            }
 
-            return endpoint;
+            if (pageNr != null)
+            {
+                sb.Append($"page={pageNr}");
+            }
+
+            if (includeFields.Length != 0)
+            {
+                sb.Append($"&fields={string.Join(',', includeFields)}");
+            }
+
+            return sb.ToString().Trim();
         }
 
-        private string GetImageEndpoint(string iifUrl, string imageId)
+        private string GetImageEndpoint(string iifUrl, string imageId, int size)
         {
-            string endpoint = iifUrl + "/" + imageId + "/full/400,/0/default.jpg";
+            string endpoint = $"{iifUrl}/{imageId}/full/{size},/0/default.jpg";
 
             return endpoint;
         }

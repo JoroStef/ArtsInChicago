@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ArtsInChicago.Models
 {
-    public class Artwork
+    public class ArtworkDataPartial
     {
 
         [JsonProperty("id")]
@@ -17,7 +17,7 @@ namespace ArtsInChicago.Models
         [JsonProperty("title")]
         public string Title { get; set; }
 
-        [JsonProperty("artist_display")]
+        [JsonProperty("artist_title")]
         public string Artist { get; set; }
 
         [JsonProperty("date_display")]
@@ -25,6 +25,9 @@ namespace ArtsInChicago.Models
 
         [JsonProperty("place_of_origin")]
         public string PlaceOfOrigin { get; set; }
+
+        [JsonProperty("department_title")]
+        public string Department { get; set; }
 
         [JsonProperty("image_id")]
         public string ImageId { get; set; }

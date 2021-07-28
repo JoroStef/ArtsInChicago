@@ -13,6 +13,7 @@
             <th>Artist</th>
             <th>Date</th>
             <th>Place of origin</th>
+            <th>Department</th>
             <th>Ref. Number</th>
         </tr>
     </thead>
@@ -24,6 +25,7 @@
                 <td>@Html.DisplayFor(modelItem => item.Artist)</td>
                 <td>@Html.DisplayFor(modelItem => item.Date)</td>
                 <td>@Html.DisplayFor(modelItem => item.PlaceOfOrigin)</td>
+                <td>@Html.DisplayFor(modelItem => item.Department)</td>
                 <td>@Html.DisplayFor(modelItem => item.RefNumber)</td>
                 @*<td>
                         <a asp-action="Details" asp-route-id="@item.Id">Details</a>

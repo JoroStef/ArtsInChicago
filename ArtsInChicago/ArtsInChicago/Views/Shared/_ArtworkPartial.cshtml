@@ -1,4 +1,4 @@
-﻿@model Artwork
+﻿@model ArtworkDataPartial
 
 
 <div class="card">
@@ -8,6 +8,7 @@
         <p class="card-text">
             @Model.Artist
         </p>
-        <a href="#!" class="btn btn-outline-dark btn-sm">More details</a>
+        @*<a href="#!" class="btn btn-outline-dark btn-sm">More details</a>*@
+        <a asp-controller="ArtworkDetails" asp-action="Index" asp-route-id="@Model.Id" class="btn btn-outline-dark btn-sm">More details</a>
     </div>
 </div>

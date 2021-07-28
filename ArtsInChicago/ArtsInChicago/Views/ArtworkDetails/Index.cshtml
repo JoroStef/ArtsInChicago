@@ -1,5 +1,28 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model ArtsInChicago.Models.ViewModels.DetailsViewModel;
+
 @{
+    ViewData["Details"] = "Artwork details";
 }
+
+<div>
+    <img src="@Model.Details.Data.ImageUrl" />
+    <h4>@Model.Details.Data.Title</h4>
+    <h6>@Model.Details.Data.Artist</h6>
+    <p>@Model.Details.Data.Medium</p>
+    <p>@Model.Details.Data.Dimentions</p>
+</div>
+
+<hr />
+<div>
+    <p>
+        @{ 
+                string text="";
+                switch (Model.BackController)
+                {
+                    case "ArtworksList": text = "list"; break;
+                    case "Gallery": text = "gallery"; break;
+                }
+            }
+        <a asp-area="" asp-controller="@Model.BackController" asp-action="IndexCached">Back to @text</a>
+    </p>
+</div>

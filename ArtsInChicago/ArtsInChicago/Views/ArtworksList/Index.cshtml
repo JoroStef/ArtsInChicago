@@ -27,9 +27,18 @@
                 <td>@Html.DisplayFor(modelItem => item.PlaceOfOrigin)</td>
                 <td>@Html.DisplayFor(modelItem => item.Department)</td>
                 <td>@Html.DisplayFor(modelItem => item.RefNumber)</td>
-                @*<td>
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a>
-                    </td>*@
+                <td>
+                    @*<a asp-controller="ArtworkDetails" asp-action="Index" asp-route-id="@item.Id">Details</a>*@
+
+                    @{
+                        var parms = new Dictionary<string, string>
+                            {
+                                { "id", @item.Id.ToString() },
+                                { "backController", "ArtworksList" }
+                            };
+                    }
+                    <a asp-controller="ArtworkDetails" asp-action="Index" asp-all-route-data="parms">Details</a>
+                </td>
             </tr>
         }
     </tbody>

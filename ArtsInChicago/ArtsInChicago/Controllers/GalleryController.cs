@@ -1,4 +1,5 @@
-﻿using ArtsInChicago.Models;
+﻿using ArtsInChicago.Helpers;
+using ArtsInChicago.Models;
 using ArtsInChicago.Services.Cotracts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -12,6 +13,9 @@ namespace ArtsInChicago.Controllers
 {
     public class GalleryController : Controller
     {
+        private const string PAGE = "currentGalleryPage";
+        private const string PAGE_NUMBER = "galleryPageNumber";
+
         private readonly IArticService articService;
         private readonly IMemoryCache memoryCache;
 
@@ -27,6 +31,9 @@ namespace ArtsInChicago.Controllers
             {
                 var artworksList = await this.articService.GetArtworksAsync(pageNumber);
 
+                CachHelper.CachInMemory(artworksList, PAGE, this.memoryCache);
+                CachHelper.CachInMemory(artworksList.PagingParams.CurrentPage, PAGE_NUMBER, this.memoryCache, 60);
+
                 return View(artworksList);
 
             }
@@ -34,6 +41,20 @@ namespace ArtsInChicago.Controllers
             {
 
                 return RedirectToAction("Error", "Home");
+            }
+        }
+
+        public IActionResult IndexCached()
+        {
+            var cacheOutput = CachHelper.GetCachedInMemory<ArtworksList>(this.memoryCache, PAGE, PAGE_NUMBER);
+
+            if (cacheOutput.obj!=null)
+            {
+                return View("Index", cacheOutput.obj);
+            }
+            else
+            {
+                return RedirectToAction("Index", routeValues: new { pageNumber = cacheOutput.pageNumber });
             }
         }
     }

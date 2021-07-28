@@ -1,5 +1,8 @@
-﻿using ArtsInChicago.Services.Cotracts;
+﻿using ArtsInChicago.Models;
+using ArtsInChicago.Models.ViewModels;
+using ArtsInChicago.Services.Cotracts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,13 +19,14 @@ namespace ArtsInChicago.Controllers
             this.articService = articService;
         }
 
-        public async Task<IActionResult> Index(int id)
+        public async Task<IActionResult> Index(int id, string backController)
         {
             try
             {
-                var artwork = await this.articService.GetArtworkByIdAsync(-1);
+                var artwork = await this.articService.GetArtworkByIdAsync(id);
 
-                return View(artwork);
+                //return View(artwork);
+                return View(new DetailsViewModel() { BackController = backController, Details = artwork });
 
             }
             catch(ArgumentNullException ex)
@@ -34,5 +38,6 @@ namespace ArtsInChicago.Controllers
                 return RedirectToAction("Error", "Home");
             }
         }
+
     }
 }

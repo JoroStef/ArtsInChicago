@@ -1,33 +1,74 @@
-﻿@model ArtsInChicago.Models.ViewModels.DetailsViewModel;
+﻿<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#printPDF").click(function () {
+                var outputModel = {
+                    ImageUrl: $('img').attr('src'),
+                    Title: $('#m_title').text(),
+                    Date: $('#m_date').text(),
+                    Artist: $('#m_artist').text(),
+                    PlaceOfOrigin: $('#place-of-origin').text(),
+                    Medium: $('#m_medium').text(),
+                    Dimentions: $('#m_dimentions').text(),
+                    Description: $('#m_description').text()
 
-@{
-    ViewData["Details"] = "Artwork details";
-}
+                };
 
-<div>
-    <img src="@Model.Details.Data.ImageUrl" />
-    <h2>@Model.Details.Data.Title, @Model.Details.Data.Date</h2>
-    <h4>@Model.Details.Data.Artist</h4>
-    <b>Medium:</b>
-    <p>@Model.Details.Data.Medium</p>
-    <b>Dimentions:</b>
-    <p>@Model.Details.Data.Dimentions</p>
-    <b>Description:</b>
-    <p>@Model.Details.Data.Description</p>
+                $.ajax({
+                    url: '@Url.Action("Print", "PrintToPdf")',
+                    type: 'POST',
+                    contentType: "application/json; charset=utf-8",
+                    dataType:"json",
+                    data: JSON.stringify(outputModel)
+                });
+            });
+        });
+    </script>
+</head>
 
-</div>
+<body>
+    @model ArtsInChicago.Models.ViewModels.DetailsViewModel;
 
-<hr />
-<div>
-    <p>
-        @{ 
-                string text="";
+    @{
+        ViewData["Details"] = "Artwork details";
+    }
+
+    <div id="details">
+        <img id="m_imageurl" src="@Model.Details.Data.ImageUrl" />
+        <h2> <span id="m_title">@Model.Details.Data.Title </span>, <span id="m_date">@Model.Details.Data.Date</span></h2>
+        <h4 id="m_artist">@Model.Details.Data.Artist</h4>
+        <b>Place of origin:</b>
+        <p id="place-of-origin">@Model.Details.Data.PlaceOfOrigin</p>
+        <b>Medium:</b>
+        <p id="m_medium">@Model.Details.Data.Medium</p>
+        <b>Dimentions:</b>
+        <p id="m_dimentions">@Model.Details.Data.Dimentions</p>
+        <b>Description:</b>
+        <p id="m_description">@Model.Details.Data.Description</p>
+
+    </div>
+
+    <hr />
+    <div>
+        <p>
+            @{
+                string text = "";
                 switch (Model.BackController)
                 {
                     case "ArtworksList": text = "list"; break;
                     case "Gallery": text = "gallery"; break;
                 }
             }
-        <a asp-area="" asp-controller="@Model.BackController" asp-action="IndexCached">Back to @text</a>
-    </p>
-</div>
+            <a asp-area="" asp-controller="@Model.BackController" asp-action="IndexCached">Back to @text</a>
+        </p>
+
+    </div>
+
+    <button id="printPDF" type="button" class="btn btn-outline-dark">Print to PDF</button>
+
+</body>
+
+
+
+

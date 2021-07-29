@@ -7,6 +7,9 @@ using Microsoft.Extensions.Configuration;
 using System.Net;
 using System;
 using System.Text;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ArtsInChicago.Services
 {
@@ -22,11 +25,14 @@ namespace ArtsInChicago.Services
         public async Task<ArtworkDetails> GetArtworkByIdAsync(int id)
         {
             string[] includeFields = { "id", "title", "artist_title", "date_display", "place_of_origin", "department_title", "image_id", "main_reference_number", "medium_display", "dimensions" };
-            string endpoint = GetEndpoint(includeFields, routeParam: id.ToString());
+            string endpoint1 = GetEndpoint(includeFields, routeParam: id.ToString());
+            string endpoint2 = GetEndpoint(new string[] { }, routeParam: $"{id}/manifest.json");
+
+            ArtworkDetails artwork = new ArtworkDetails();
 
             var client = new HttpClient();
 
-            using (var resource = await client.GetAsync(endpoint))
+            using (var resource = await client.GetAsync(endpoint1))
             {
                 if (resource.StatusCode != HttpStatusCode.OK)
                 {
@@ -35,14 +41,30 @@ namespace ArtsInChicago.Services
 
                 var result = await resource.Content.ReadAsStringAsync();
 
-                var artwork = JsonConvert.DeserializeObject<ArtworkDetails>(result);
+                artwork = JsonConvert.DeserializeObject<ArtworkDetails>(result);
 
                 string imageEndpoint = GetImageEndpoint(artwork.ArticConfig.IIIFurl, artwork.Data.ImageId, 843);
 
                 artwork.Data.ImageUrl = imageEndpoint;
 
-                return artwork;
             }
+
+            using (var resource = await client.GetAsync(endpoint2))
+            {
+                if (resource.StatusCode != HttpStatusCode.OK)
+                {
+                    throw new ArgumentNullException(resource.ReasonPhrase);
+                }
+
+                var result = await resource.Content.ReadAsStringAsync();
+
+                var description = JsonConvert.DeserializeObject<Description>(result);
+
+                artwork.Data.Description = description.Items.FirstOrDefault(i => i.Language == "en").Value ?? "";
+            }
+
+            return artwork;
+
         }
 
         public async Task<ArtworksList> GetArtworksAsync(int? pageNr)

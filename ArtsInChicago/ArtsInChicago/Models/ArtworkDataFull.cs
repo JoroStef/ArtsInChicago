@@ -13,5 +13,7 @@ namespace ArtsInChicago.Models
 
         [JsonProperty("dimensions")]
         public string Dimentions { get; set; }
+
+        public string Description { get; set; }
     }
 }

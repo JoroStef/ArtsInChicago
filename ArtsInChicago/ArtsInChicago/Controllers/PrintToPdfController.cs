@@ -11,13 +11,21 @@ namespace ArtsInChicago.Controllers
 {
     public class PrintToPdfController : Controller
     {
-        [HttpPost]
-        public IActionResult Print([FromBody] ArtworkDataFull model)
+        private readonly PdfPrinter pdfPrinter;
+
+        public PrintToPdfController(PdfPrinter pdfPrinter)
         {
-            PdfPrinter.PrintIndividualArtwork(model, out string fileName);
+            this.pdfPrinter = pdfPrinter;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Print([FromBody] ArtworkDataFull model)
+        {
+
+            string fileName = await this.pdfPrinter.PrintIndividualArtwork(model);
             PdfPrinter.OpenDoc(fileName);
 
-            return View();
+            return StatusCode(200);
         }
 
         public class Model

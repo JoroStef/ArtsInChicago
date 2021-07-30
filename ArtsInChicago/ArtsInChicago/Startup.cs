@@ -1,3 +1,4 @@
+using ArtsInChicago.Helpers;
 using ArtsInChicago.Services;
 using ArtsInChicago.Services.Cotracts;
 using Microsoft.AspNetCore.Builder;
@@ -24,6 +25,7 @@ namespace ArtsInChicago
             services.AddControllersWithViews();
 
             services.AddScoped<IArticService, ArticService>();
+            services.AddScoped<PdfPrinter>();
 
             //services.AddSingleton<IMemoryCache, MemoryCache>();
 

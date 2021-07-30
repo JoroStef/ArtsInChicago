@@ -12,6 +12,7 @@
 //using System.Threading.Tasks;
 
 using ArtsInChicago.Models;
+using Microsoft.AspNetCore.Hosting;
 using PdfSharp.Drawing;
 using PdfSharp.Drawing.Layout;
 using PdfSharp.Pdf;
@@ -20,16 +21,23 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ArtsInChicago.Helpers
 {
-    public static class PdfPrinter
+    public class PdfPrinter
     {
         private const double imgScale = 0.5;
         private const double leftMargin = 100;
         private const double rightMargin = 50;
+        private readonly IWebHostEnvironment environment;
 
-        public static void PrintIndividualArtwork(ArtworkDataFull model, out string fileName)
+        public PdfPrinter(IWebHostEnvironment environment)
+        {
+            this.environment = environment;
+        }
+
+        public async Task<string> PrintIndividualArtwork(ArtworkDataFull model)
         {
 
             var doc = new PdfDocument();
@@ -39,13 +47,24 @@ namespace ArtsInChicago.Helpers
             page.Orientation = PdfSharp.PageOrientation.Portrait;
             var gfx = XGraphics.FromPdfPage(page);
 
-            WebRequest request = WebRequest.Create(model.ImageUrl);
+            // *** change it
+            XImage image;
+            try
+            {
+                WebRequest request = WebRequest.Create(model.ImageUrl);
 
-            WebResponse response = request.GetResponse();
-            Stream responseStream = response.GetResponseStream();
+                WebResponse response = await request.GetResponseAsync();
+                Stream responseStream = response.GetResponseStream();
 
+                image = XImage.FromStream(responseStream);
 
-            var image = XImage.FromStream(responseStream);
+            }
+            catch (Exception)
+            {
+                string rootPath = this.environment.ContentRootPath;
+                string imagePath = Path.Combine(rootPath, "wwwroot", "images", "PictureUanavailable.jpg");
+                image = XImage.FromFile(imagePath);
+            }
 
             int imageX = (int)(page.Width / 2 - imgScale * image.PointWidth / 2);
             int imageY = 50;
@@ -68,10 +87,11 @@ namespace ArtsInChicago.Helpers
             tf.DrawString(ComposeTextLeft(model), xFont, XBrushes.Black, rectLeft, XStringFormats.TopLeft);
             tf.DrawString(ComposeTextRight(model), xFont, XBrushes.Black, rectRight, XStringFormats.TopLeft);
 
-            fileName = $@"{AppDomain.CurrentDomain.BaseDirectory}\{Guid.NewGuid()}.pdf";
+            string fileName = $@"{AppDomain.CurrentDomain.BaseDirectory}\{Guid.NewGuid()}.pdf";
 
             doc.Save(fileName);
 
+            return fileName;
 
         }
 

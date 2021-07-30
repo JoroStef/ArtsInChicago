@@ -29,6 +29,7 @@ namespace ArtsInChicago.Controllers
         {
             try
             {
+                //var artworksList = await this.articService.GetArtworksAsync(pageNumber);
                 var artworksList = await this.articService.GetArtworksAsync(pageNumber);
 
                 CachHelper.CachInMemory(artworksList, PAGE, this.memoryCache);

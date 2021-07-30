@@ -10,6 +10,8 @@ using System.Text;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace ArtsInChicago.Services
 {
@@ -157,9 +159,17 @@ namespace ArtsInChicago.Services
 
         private string GetImageEndpoint(string iifUrl, string imageId, int size)
         {
-            string endpoint = $"{iifUrl}/{imageId}/full/{size},/0/default.jpg";
+            return "/images/PictureUanavailable.jpg";
 
-            return endpoint;
+            //if (string.IsNullOrEmpty(imageId))
+            //{
+            //    return "/images/PictureUanavailable.jpg";
+            //}
+            //else
+            //{
+            //   return $"{iifUrl}/{imageId}/full/{size},/0/default.jpg";
+            //}
         }
+
     }
 }

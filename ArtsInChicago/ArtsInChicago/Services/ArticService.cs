@@ -159,16 +159,14 @@ namespace ArtsInChicago.Services
 
         private string GetImageEndpoint(string iifUrl, string imageId, int size)
         {
-            return "/images/PictureUanavailable.jpg";
-
-            //if (string.IsNullOrEmpty(imageId))
-            //{
-            //    return "/images/PictureUanavailable.jpg";
-            //}
-            //else
-            //{
-            //   return $"{iifUrl}/{imageId}/full/{size},/0/default.jpg";
-            //}
+            if (string.IsNullOrEmpty(imageId))
+            {
+                return "/images/PictureUanavailable.jpg";
+            }
+            else
+            {
+                return $"{iifUrl}/{imageId}/full/{size},/0/default.jpg";
+            }
         }
 
     }

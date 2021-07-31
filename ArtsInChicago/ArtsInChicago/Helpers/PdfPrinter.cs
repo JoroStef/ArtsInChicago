@@ -47,6 +47,8 @@ namespace ArtsInChicago.Helpers
             page.Orientation = PdfSharp.PageOrientation.Portrait;
             var gfx = XGraphics.FromPdfPage(page);
 
+            double pageClearWidth = page.Width - leftMargin - rightMargin;
+
             // *** change it
             XImage image;
             try
@@ -66,8 +68,8 @@ namespace ArtsInChicago.Helpers
                 image = XImage.FromFile(imagePath);
             }
 
-            int imageX = (int)(page.Width / 2 - imgScale * image.PointWidth / 2);
-            int imageY = 50;
+            double imageX = leftMargin + pageClearWidth / 2 - imgScale * image.PointWidth / 2;
+            double imageY = 50f;
             gfx.DrawImage(image, imageX, imageY, image.PointWidth * imgScale, image.PointHeight * imgScale);
 
             var tf = new XTextFormatter(gfx);
@@ -75,7 +77,6 @@ namespace ArtsInChicago.Helpers
             var xFont = new XFont("Times New Roman", 12, XFontStyle.Regular);
 
             double rectTop = imageY + imgScale * image.PointHeight + 20;
-            double pageClearWidth = page.Width - leftMargin - rightMargin;
 
             XRect rectCenter = new XRect(leftMargin, rectTop, pageClearWidth, 80);
             XRect rectLeft = new XRect(leftMargin, rectTop + 80, pageClearWidth / 2 - 5, 300);

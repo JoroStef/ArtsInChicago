@@ -74,7 +74,8 @@ namespace ArtsInChicago.Helpers
 
             var tf = new XTextFormatter(gfx);
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            var xFont = new XFont("Times New Roman", 12, XFontStyle.Regular);
+            var xFontRegular = new XFont("Times New Roman", 12, XFontStyle.Regular);
+            var xFontBold = new XFont("Times New Roman", 12, XFontStyle.Bold);
 
             double rectTop = imageY + imgScale * image.PointHeight + 20;
 
@@ -83,10 +84,10 @@ namespace ArtsInChicago.Helpers
             XRect rectRight = new XRect(leftMargin + pageClearWidth / 2 + 10, rectTop + 80, pageClearWidth / 2 - 5, 300);
 
             tf.Alignment = XParagraphAlignment.Center;
-            tf.DrawString(ComposeTextCenter(model), xFont, XBrushes.Black, rectCenter, XStringFormats.TopLeft);
+            tf.DrawString(ComposeTextCenter(model), xFontBold, XBrushes.Black, rectCenter, XStringFormats.TopLeft);
             tf.Alignment = XParagraphAlignment.Justify;
-            tf.DrawString(ComposeTextLeft(model), xFont, XBrushes.Black, rectLeft, XStringFormats.TopLeft);
-            tf.DrawString(ComposeTextRight(model), xFont, XBrushes.Black, rectRight, XStringFormats.TopLeft);
+            tf.DrawString(ComposeTextLeft(model), xFontRegular, XBrushes.Black, rectLeft, XStringFormats.TopLeft);
+            tf.DrawString(ComposeTextRight(model), xFontRegular, XBrushes.Black, rectRight, XStringFormats.TopLeft);
 
             string fileName = $@"{AppDomain.CurrentDomain.BaseDirectory}\{Guid.NewGuid()}.pdf";
 

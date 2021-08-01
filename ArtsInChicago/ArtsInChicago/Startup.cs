@@ -25,7 +25,7 @@ namespace ArtsInChicago
             services.AddControllersWithViews();
 
             services.AddScoped<IArticService, ArticService>();
-            services.AddScoped<PdfPrinter>();
+            services.AddScoped<IPdfPrinter, PdfPrinterMigradoc>();
 
             //services.AddSingleton<IMemoryCache, MemoryCache>();
 

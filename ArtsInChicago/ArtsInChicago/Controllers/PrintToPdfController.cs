@@ -11,9 +11,9 @@ namespace ArtsInChicago.Controllers
 {
     public class PrintToPdfController : Controller
     {
-        private readonly PdfPrinter pdfPrinter;
+        private readonly IPdfPrinter pdfPrinter;
 
-        public PrintToPdfController(PdfPrinter pdfPrinter)
+        public PrintToPdfController(IPdfPrinter pdfPrinter)
         {
             this.pdfPrinter = pdfPrinter;
         }
@@ -23,7 +23,7 @@ namespace ArtsInChicago.Controllers
         {
 
             string fileName = await this.pdfPrinter.PrintIndividualArtwork(model);
-            PdfPrinter.OpenDoc(fileName);
+            this.pdfPrinter.OpenDoc(fileName);
 
             return StatusCode(200);
         }

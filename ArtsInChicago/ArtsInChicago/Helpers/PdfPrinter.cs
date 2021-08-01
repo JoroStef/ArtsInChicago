@@ -18,48 +18,56 @@ namespace ArtsInChicago.Helpers
         private const double leftMargin = 100;
         private const double rightMargin = 50;
         private readonly IWebHostEnvironment environment;
+        XFont xFontRegular;
+        XFont xFontBold;
 
         public PdfPrinter(IWebHostEnvironment environment)
         {
             this.environment = environment;
+
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            this.xFontRegular = new XFont("Times New Roman", 12, XFontStyle.Regular);
+            this.xFontBold = new XFont("Times New Roman", 12, XFontStyle.Bold);
+
+
         }
 
         public async Task<string> PrintIndividualArtwork(ArtworkDataFull model)
         {
-
             var doc = new PdfDocument();
-            var page = doc.AddPage();
-            page.Size = PdfSharp.PageSize.A4;
-            page.Orientation = PdfSharp.PageOrientation.Portrait;
-            page.TrimMargins.All = XUnit.FromPoint(72);
+            AddPage(doc, out PdfPage page);
 
-            var gfx = XGraphics.FromPdfPage(page);
-
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            var xFontRegular = new XFont("Times New Roman", 12, XFontStyle.Regular);
-            var xFontBold = new XFont("Times New Roman", 12, XFontStyle.Bold);
+            XGraphics gfx = XGraphics.FromPdfPage(page);
 
             XImage image = await GetImage(model.ImageUrl);
 
             XUnit currentY = XUnit.FromPoint(0);
 
-            DrawImage(page, image, gfx, ref currentY);
+            DrawImage(page, gfx, image, ref currentY);
 
-            WriteText($"{model.Title}", page, xFontBold, gfx, ref currentY, XParagraphAlignment.Center);
-            WriteText($"{model.Artist}, {model.PlaceOfOrigin}, {model.Date}", page, xFontBold, gfx, ref currentY, XParagraphAlignment.Center);
-            WriteText("Medium:", page, xFontBold, gfx, ref currentY, XParagraphAlignment.Left);
-            WriteText($"{model.Medium}", page, xFontRegular, gfx, ref currentY, XParagraphAlignment.Left);
-            WriteText("Dimentions:", page, xFontBold, gfx, ref currentY, XParagraphAlignment.Left);
-            WriteText($"{model.Dimentions}", page, xFontRegular, gfx, ref currentY, XParagraphAlignment.Left);
-            WriteText("Description:", page, xFontBold, gfx, ref currentY, XParagraphAlignment.Left);
-            WriteText($"{model.Description}", page, xFontRegular, gfx, ref currentY, XParagraphAlignment.Left);
-
+            WriteText($"{model.Title}", page, gfx, this.xFontBold, ref currentY, XParagraphAlignment.Center);
+            WriteText($"{model.Artist}, {model.PlaceOfOrigin}, {model.Date}", page, gfx, this.xFontBold, ref currentY, XParagraphAlignment.Center);
+            WriteText("Medium:", page, gfx, this.xFontBold, ref currentY, XParagraphAlignment.Left);
+            WriteText($"{model.Medium}", page, gfx, this.xFontRegular, ref currentY, XParagraphAlignment.Left);
+            WriteText("Dimentions:", page, gfx, this.xFontBold, ref currentY, XParagraphAlignment.Left);
+            WriteText($"{model.Dimentions}", page, gfx, this.xFontRegular, ref currentY, XParagraphAlignment.Left);
+            WriteText("Description:", page, gfx, this.xFontBold, ref currentY, XParagraphAlignment.Left);
+            WriteText($"{model.Description}", page, gfx, this.xFontRegular, ref currentY, XParagraphAlignment.Left);
 
             string fileName = $@"{AppDomain.CurrentDomain.BaseDirectory}\{Guid.NewGuid()}.pdf";
 
             doc.Save(fileName);
 
             return fileName;
+
+        }
+
+        private void AddPage(PdfDocument doc, out PdfPage page)
+        {
+            page = doc.AddPage();
+            page.Size = PdfSharp.PageSize.A4;
+            page.Orientation = PdfSharp.PageOrientation.Portrait;
+            page.TrimMargins.All = XUnit.FromPoint(72);
 
         }
 
@@ -87,15 +95,16 @@ namespace ArtsInChicago.Helpers
             return image;
         }
 
-        private void DrawImage(PdfPage page, XImage image, XGraphics gfx, ref XUnit currentY)
+        private void DrawImage(PdfPage page, XGraphics gfx, XImage image, ref XUnit currentY)
         {
+
             XUnit pageClearWidth = page.Width - page.TrimMargins.Left - page.TrimMargins.Right;
 
             XUnit imageX = page.TrimMargins.Left + pageClearWidth / 2 - imgScale * image.PointWidth / 2;
             XUnit imageY = currentY;
             gfx.DrawImage(image, imageX, imageY, image.PointWidth * imgScale, image.PointHeight * imgScale);
 
-            currentY += image.PointHeight * imgScale + XUnit.FromPoint(72/2);
+            currentY += image.PointHeight * imgScale + XUnit.FromPoint(72 / 2);
 
         }
 
@@ -109,23 +118,33 @@ namespace ArtsInChicago.Helpers
 
         }
 
-        private void WriteText(string text, PdfPage page, XFont font, XGraphics gfx, ref XUnit currentY, XParagraphAlignment textAlignment)
+        private void WriteText(string text, PdfPage page, XGraphics gfx, XFont font, ref XUnit currentY, XParagraphAlignment textAlignment)
         {
             XUnit pageClearWidth = page.Width - page.TrimMargins.Left - page.TrimMargins.Right;
-            XUnit rectHeight = GetTextRectangleHeight(text, gfx, font, pageClearWidth);
+
+            XSize size = gfx.MeasureString(text, font);
+
+            XUnit rectHeight = XUnit.FromPoint(size.Height * (Math.Ceiling(size.Width / pageClearWidth)));
+
+            XUnit rectBottom = currentY + rectHeight;
+
+            if (rectBottom > page.Height - page.TrimMargins.Bottom)
+            {
+                rectHeight = page.Height - page.TrimMargins.Bottom;
+            }
 
             XRect rect = new XRect(page.TrimMargins.Left, currentY, pageClearWidth, rectHeight);
 
+            gfx.DrawRectangle(XPens.Black, rect);
+
             var tf = new XTextFormatter(gfx);
-
-            //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
             tf.Alignment = textAlignment;
             tf.DrawString(text, font, XBrushes.Black, rect, XStringFormats.TopLeft);
 
             currentY += rectHeight;
         }
 
+        #region Not used
         //private static string ComposeTextHeading(ArtworkDataFull model)
         //{
         //    StringBuilder sb = new StringBuilder();
@@ -175,6 +194,8 @@ namespace ArtsInChicago.Helpers
 
         //    return sb.ToString().Trim();
         //}
+
+        #endregion
 
         public static void OpenDoc(string fileName)
         {

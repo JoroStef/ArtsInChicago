@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ArtsInChicago.Helpers
+namespace ArtsInChicago.Services.Cotracts
 {
-    public interface IPdfPrinter
+    public interface IPdfPrintService
     {
-        Task<string> PrintIndividualArtwork(ArtworkDataFull model);
+        string PrintIndividualArtwork(ArtworkDataFull model, string imageString);
 
         void OpenDoc(string fileName);
     }

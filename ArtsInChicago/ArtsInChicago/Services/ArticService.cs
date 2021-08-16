@@ -69,16 +69,11 @@ namespace ArtsInChicago.Services
 
         }
 
-        public async Task<ArtworksList> GetArtworksAsync(int? pageNr)
+        public async Task<ArtworksList> GetArtworksAsync(int? pageNr, int? pageLimit)
         {
-            if (pageNr == null || pageNr < 1)
-            {
-                pageNr = 1;
-            }
-
             string[] includeFields = { "id", "title", "artist_title", "date_display", "place_of_origin", "department_title", "image_id", "main_reference_number" };
-            string endpoint = GetEndpoint(includeFields, pageNr);
-
+            string endpoint = GetEndpoint(includeFields, pageNr, pageLimit);
+         
             var client = new HttpClient();
 
             using (var resource = await client.GetAsync(endpoint))
@@ -128,7 +123,7 @@ namespace ArtsInChicago.Services
 
         #endregion
 
-        private string GetEndpoint(string[] includeFields, int? pageNr = null, string routeParam = "")
+        private string GetEndpoint(string[] includeFields, int? pageNr = null, int? pageLimit = null, string routeParam = "")
         {
             StringBuilder sb = new StringBuilder();
 
@@ -139,21 +134,29 @@ namespace ArtsInChicago.Services
                 sb.Append($"/{routeParam}");
             }
 
-            if (includeFields.Length != 0 || pageNr != null)
-            {
-                sb.Append("?");
-            }
+            List<string> queryParams = new List<string>();
 
             if (pageNr != null)
             {
-                sb.Append($"page={pageNr}");
+                queryParams.Add($"page={pageNr}");
+            }
+
+            if (pageLimit != null)
+            {
+                queryParams.Add($"limit={pageNr}");
             }
 
             if (includeFields.Length != 0)
             {
-                sb.Append($"&fields={string.Join(',', includeFields)}");
+                queryParams.Add($"fields={string.Join(',', includeFields)}");
             }
 
+            if (queryParams.Count!= 0)
+            {
+                sb.Append("?");
+                sb.Append(string.Join('&', queryParams));
+            }
+            
             return sb.ToString().Trim();
         }
 

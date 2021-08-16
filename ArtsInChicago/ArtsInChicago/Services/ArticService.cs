@@ -72,8 +72,9 @@ namespace ArtsInChicago.Services
         public async Task<ArtworksList> GetArtworksAsync(int? pageNr, int? pageLimit)
         {
             string[] includeFields = { "id", "title", "artist_title", "date_display", "place_of_origin", "department_title", "image_id", "main_reference_number" };
-            string endpoint = GetEndpoint(includeFields, pageNr, pageLimit);
-         
+            //string endpoint = GetEndpoint(includeFields, pageNr, pageLimit);
+            string endpoint = GetEndpoint(includeFields, pageNr, 9999);
+
             var client = new HttpClient();
 
             using (var resource = await client.GetAsync(endpoint))
@@ -143,7 +144,7 @@ namespace ArtsInChicago.Services
 
             if (pageLimit != null)
             {
-                queryParams.Add($"limit={pageNr}");
+                queryParams.Add($"limit={pageLimit}");
             }
 
             if (includeFields.Length != 0)

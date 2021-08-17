@@ -1,5 +1,7 @@
 ﻿using ArtsInChicago.Helpers;
 using ArtsInChicago.Models;
+using ArtsInChicago.Models.ViewModels;
+using ArtsInChicago.Services.Contracts;
 using ArtsInChicago.Services.Cotracts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -16,11 +18,13 @@ namespace ArtsInChicago.Controllers
         private const string PAGE_NUMBER = "listPageNumber";
 
         private readonly IArticService articService;
+        private readonly IArtworkTypesService artworkTypesService;
         private readonly IMemoryCache memoryCache;
 
-        public ArtworksListController(IArticService articService, IMemoryCache memoryCache)
+        public ArtworksListController(IArticService articService, IArtworkTypesService artworkTypesService, IMemoryCache memoryCache)
         {
             this.articService = articService;
+            this.artworkTypesService = artworkTypesService;
             this.memoryCache = memoryCache;
         }
 
@@ -28,12 +32,19 @@ namespace ArtsInChicago.Controllers
         {
             try
             {
+                var typesCount = await this.artworkTypesService.GetCountAsync();
+                var typesCollection = await this.artworkTypesService.GetAllAsync(typesCount);
+
                 var artworksList = await this.articService.GetArtworksAsync(pageNumber, null);
 
                 CachHelper.CachInMemory(artworksList, PAGE, this.memoryCache);
                 CachHelper.CachInMemory(artworksList.PagingParams.CurrentPage, PAGE_NUMBER, this.memoryCache, 60);
 
-                return View(artworksList);
+                var viewModel = new ArtworksListViewModel();
+                viewModel.ArtworksList = artworksList;
+                viewModel.ArtworkTypes = typesCollection;
+
+                return View(viewModel);
 
             }
             catch (Exception)

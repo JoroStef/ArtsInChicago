@@ -30,7 +30,7 @@ namespace ArtsInChicago.Controllers
             try
             {
                 //var artworksList = await this.articService.GetArtworksAsync(pageNumber);
-                var artworksList = await this.articService.GetArtworksAsync(pageNumber, null);
+                var artworksList = await this.articService.GetArtworksAsync(pageNumber, null, null);
 
                 CachHelper.CachInMemory(artworksList, PAGE, this.memoryCache);
                 CachHelper.CachInMemory(artworksList.PagingParams.CurrentPage, PAGE_NUMBER, this.memoryCache, 60);

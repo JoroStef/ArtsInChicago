@@ -28,14 +28,14 @@ namespace ArtsInChicago.Controllers
             this.memoryCache = memoryCache;
         }
 
-        public async Task<IActionResult> Index(int? pageNumber)
+        public async Task<IActionResult> Index(int? pageNumber, string artwork_type)
         {
             try
             {
                 var typesCount = await this.artworkTypesService.GetCountAsync();
                 var typesCollection = await this.artworkTypesService.GetAllAsync(typesCount);
 
-                var artworksList = await this.articService.GetArtworksAsync(pageNumber, null);
+                var artworksList = await this.articService.GetArtworksAsync(pageNumber, null, artwork_type);
 
                 CachHelper.CachInMemory(artworksList, PAGE, this.memoryCache);
                 CachHelper.CachInMemory(artworksList.PagingParams.CurrentPage, PAGE_NUMBER, this.memoryCache, 60);

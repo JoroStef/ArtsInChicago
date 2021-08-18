@@ -36,6 +36,11 @@ namespace ArtsInChicago.Models
         [DisplayName("Ref. Number")]
         public string RefNumber { get; set; }
 
+        [JsonProperty("artwork_type_title")]
+        public string Type { get; set; }
+
         public string ImageUrl { get; set; }
+
+
     }
 }

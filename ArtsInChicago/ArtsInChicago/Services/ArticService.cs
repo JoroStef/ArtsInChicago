@@ -69,9 +69,9 @@ namespace ArtsInChicago.Services
 
         }
 
-        public async Task<ArtworksList> GetArtworksAsync(int? pageNr, int? pageLimit)
+        public async Task<ArtworksList> GetArtworksAsync(int? pageNr, int? pageLimit, string artworkType)
         {
-            string[] includeFields = { "id", "title", "artist_title", "date_display", "place_of_origin", "department_title", "image_id", "main_reference_number" };
+            string[] includeFields = { "id", "title", "artist_title", "date_display", "place_of_origin", "department_title", "image_id", "main_reference_number", "artwork_type_title" };
             //string endpoint = GetEndpoint(includeFields, pageNr, pageLimit);
             string endpoint = GetEndpoint(includeFields, pageNr, 100);
 

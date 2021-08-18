@@ -8,7 +8,7 @@
 
 <form asp-controller="ArtworksList" asp-action="Index">
     <label>Select artwork type:</label>
-    <select>
+    <select name="artwork_type" onchange="this.form.submit()">
         @foreach (var item in Model.ArtworkTypes)
         {
             <option>@item</option>
